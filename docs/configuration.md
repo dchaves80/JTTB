@@ -47,7 +47,7 @@ spec:
     spec:
       containers:
       - name: toolbox
-        image: your-registry/jttb:1.0
+        image: edering/jttb:latest
         ports:
         - containerPort: 80
         env:
@@ -108,7 +108,7 @@ docker run -d \
   -e JTTB_USER="admin" \
   -e JTTB_PASSWORD="admin123" \
   -e JTTB_TOKEN_EXPIRY="8h" \
-  jttb:1.0
+  edering/jttb:latest
 ```
 
 ---

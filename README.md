@@ -1,5 +1,8 @@
 # JTTB - Terminal Toolbox
 
+[![Docker Hub](https://img.shields.io/docker/v/edering/jttb?label=Docker%20Hub&logo=docker)](https://hub.docker.com/r/edering/jttb)
+[![GitHub](https://img.shields.io/badge/GitHub-Source-black?logo=github)](https://github.com/dchaves80/JTTB)
+
 A web-based terminal for Kubernetes cluster debugging and administration.
 
 ```
@@ -32,6 +35,20 @@ JTTB provides a secure web terminal with built-in tools for debugging connectivi
 | [Configuration](docs/configuration.md) | Environment variables and settings |
 | [Usage Guide](docs/usage-guide.md) | Terminal commands and features |
 | [Architecture](docs/architecture.md) | Technical design and stack |
+
+---
+
+## Quick Start
+
+```bash
+docker run -d -p 8080:80 \
+  -e JTTB_JWT_SECRET="your-secret-key" \
+  -e JTTB_USER="admin" \
+  -e JTTB_PASSWORD="admin123" \
+  edering/jttb:latest
+```
+
+Access at `http://localhost:8080`
 
 ---
 

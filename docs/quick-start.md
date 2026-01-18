@@ -1,10 +1,24 @@
 # Quick Start
 
-Get JTTB running in your Kubernetes cluster in minutes.
+Get JTTB running in minutes.
 
 ---
 
-## Option 1: Using Pre-built Image
+## Option 1: Docker (Quickest)
+
+```bash
+docker run -d -p 8080:80 \
+  -e JTTB_JWT_SECRET="your-secret-key" \
+  -e JTTB_USER="admin" \
+  -e JTTB_PASSWORD="admin123" \
+  edering/jttb:latest
+```
+
+Access at `http://localhost:8080`
+
+---
+
+## Option 2: Kubernetes
 
 ### 1. Create the namespace
 
@@ -15,7 +29,15 @@ kubectl create namespace toolbox
 ### 2. Deploy JTTB
 
 ```bash
-kubectl apply -f deployment.yaml -n toolbox
+kubectl apply -f https://raw.githubusercontent.com/dchaves80/JTTB/main/deployment.yaml
+```
+
+Or download and customize first:
+
+```bash
+curl -O https://raw.githubusercontent.com/dchaves80/JTTB/main/deployment.yaml
+# Edit deployment.yaml to change credentials
+kubectl apply -f deployment.yaml
 ```
 
 ### 3. Expose the service
@@ -34,7 +56,7 @@ Access JTTB at `http://<node-ip>:<node-port>`
 
 ---
 
-## Option 2: Build Your Own Image
+## Option 3: Build Your Own Image
 
 ### 1. Clone the repository
 
@@ -56,15 +78,7 @@ docker tag jttb:1.0 your-registry.com/jttb:1.0
 docker push your-registry.com/jttb:1.0
 ```
 
-### 4. Update deployment.yaml
-
-Edit `deployment.yaml` and change the image reference:
-
-```yaml
-image: your-registry.com/jttb:1.0
-```
-
-### 5. Deploy
+### 4. Deploy
 
 ```bash
 kubectl apply -f deployment.yaml -n toolbox
