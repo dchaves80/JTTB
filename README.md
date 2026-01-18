@@ -4,7 +4,9 @@
 [![GitHub](https://img.shields.io/badge/GitHub-Source-black?logo=github)](https://github.com/dchaves80/JTTB)
 [![Ko-fi](https://img.shields.io/badge/Ko--fi-Support%20Me-ff5f5f?logo=ko-fi)](https://ko-fi.com/edering)
 [![PayPal](https://img.shields.io/badge/PayPal-Donate-00457C?logo=paypal)](https://paypal.me/ederingar)
-[![Mercado Pago](https://img.shields.io/badge/Mercado%20Pago-Donate-00bcff)](https://mpago.la/1J9LbmG)
+[![Mercado Pago $100](https://img.shields.io/badge/MP-$100-00bcff)](https://mpago.la/1BGY98f)
+[![Mercado Pago $300](https://img.shields.io/badge/MP-$300-00bcff)](https://mpago.la/1J9LbmG)
+[![Mercado Pago $1000](https://img.shields.io/badge/MP-$1000-00bcff)](https://mpago.la/2LDQsMa)
 
 A web-based terminal for Kubernetes cluster debugging and administration.
 
