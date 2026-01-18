@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild, AfterViewChecked } from '@angular/core';
+import { Component, ElementRef, ViewChild, AfterViewChecked, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -25,6 +25,7 @@ interface CommandResult {
 export class TerminalComponent implements AfterViewChecked {
   @ViewChild('terminalOutput') terminalOutput!: ElementRef;
   @ViewChild('commandInput') commandInput!: ElementRef;
+  @ViewChild('searchInput') searchInput!: ElementRef;
 
   currentCommand = '';
   history: CommandResult[] = [];
@@ -34,6 +35,12 @@ export class TerminalComponent implements AfterViewChecked {
   user: string;
   cwd = '~'; // Directorio actual
   isDragging = false; // Estado de drag & drop
+
+  // Search
+  showSearch = false;
+  searchTerm = '';
+  currentMatch = 0;
+  totalMatches = 0;
 
   constructor(
     private http: HttpClient,
@@ -352,5 +359,88 @@ Mas ayuda: cat /help.txt
     if (bytes < 1024) return bytes + ' B';
     if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
     return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+  }
+
+  // Search functionality
+  @HostListener('window:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent): void {
+    if ((event.ctrlKey || event.metaKey) && event.key === 'f') {
+      event.preventDefault();
+      this.toggleSearch();
+    }
+  }
+
+  toggleSearch(): void {
+    this.showSearch = !this.showSearch;
+    if (this.showSearch) {
+      setTimeout(() => this.searchInput?.nativeElement?.focus(), 0);
+    } else {
+      this.searchTerm = '';
+      this.currentMatch = 0;
+      this.totalMatches = 0;
+      this.focusInput();
+    }
+  }
+
+  onSearch(): void {
+    if (!this.searchTerm) {
+      this.currentMatch = 0;
+      this.totalMatches = 0;
+      return;
+    }
+    this.countMatches();
+    if (this.totalMatches > 0) {
+      this.currentMatch = 1;
+    }
+  }
+
+  countMatches(): void {
+    const term = this.searchTerm.toLowerCase();
+    let count = 0;
+    for (const item of this.history) {
+      if (item.stdout) {
+        count += (item.stdout.toLowerCase().match(new RegExp(this.escapeRegex(term), 'g')) || []).length;
+      }
+      if (item.stderr) {
+        count += (item.stderr.toLowerCase().match(new RegExp(this.escapeRegex(term), 'g')) || []).length;
+      }
+    }
+    this.totalMatches = count;
+  }
+
+  nextMatch(): void {
+    if (this.totalMatches > 0) {
+      this.currentMatch = this.currentMatch >= this.totalMatches ? 1 : this.currentMatch + 1;
+    }
+  }
+
+  prevMatch(): void {
+    if (this.totalMatches > 0) {
+      this.currentMatch = this.currentMatch <= 1 ? this.totalMatches : this.currentMatch - 1;
+    }
+  }
+
+  highlightText(text: string): string {
+    if (!this.searchTerm || !text) return this.escapeHtml(text);
+
+    const escaped = this.escapeHtml(text);
+    const term = this.escapeHtml(this.searchTerm);
+    const regex = new RegExp(`(${this.escapeRegex(term)})`, 'gi');
+
+    return escaped.replace(regex, '<span class="search-highlight">$1</span>');
+  }
+
+  escapeHtml(text: string): string {
+    if (!text) return '';
+    return text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  escapeRegex(text: string): string {
+    return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   }
 }

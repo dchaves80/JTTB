@@ -30,6 +30,31 @@
     </div>
   </div>
 
+  <!-- Toolbar -->
+  <div class="terminal-toolbar">
+    <button class="toolbar-btn" (click)="toggleSearch()" [class.active]="showSearch" title="Search (Ctrl+F)">
+      🔍 <span>Search</span>
+    </button>
+  </div>
+
+  <!-- Search bar -->
+  <div class="search-bar" *ngIf="showSearch">
+    <input
+      #searchInput
+      type="text"
+      [(ngModel)]="searchTerm"
+      (input)="onSearch()"
+      (keydown.enter)="nextMatch()"
+      (keydown.escape)="toggleSearch()"
+      placeholder="Search in output..."
+      autofocus
+    >
+    <span class="search-count" *ngIf="searchTerm">{{ currentMatch }}/{{ totalMatches }}</span>
+    <button class="search-nav" (click)="prevMatch()" title="Previous">▲</button>
+    <button class="search-nav" (click)="nextMatch()" title="Next">▼</button>
+    <button class="search-close" (click)="toggleSearch()" title="Close (Esc)">✕</button>
+  </div>
+
   <!-- Drop zone overlay -->
   <div class="drop-overlay" *ngIf="isDragging">
     <div class="drop-content">
@@ -58,10 +83,10 @@
         <span class="command">{{ item.command }}</span>
       </div>
       <div class="output" *ngIf="item.stdout">
-        <pre>{{ item.stdout }}</pre>
+        <pre [innerHTML]="highlightText(item.stdout)"></pre>
       </div>
       <div class="error" *ngIf="item.stderr">
-        <pre>{{ item.stderr }}</pre>
+        <pre [innerHTML]="highlightText(item.stderr)"></pre>
       </div>
     </div>
   </div>
