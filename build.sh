@@ -20,26 +20,19 @@ echo "========================================"
 echo "  JTTB Build & Push - v${VERSION}"
 echo "========================================"
 
-# Build frontend
+# Build Docker image (multi-stage: builds frontend inside)
 echo ""
-echo "[1/4] Building Angular frontend..."
-cd jttb-front
-npm run build
-cd ..
-
-# Build Docker image
-echo ""
-echo "[2/4] Building Docker image..."
+echo "[1/3] Building Docker image..."
 docker build -t ${IMAGE}:${VERSION} -t ${IMAGE}:latest .
 
 # Push version tag
 echo ""
-echo "[3/4] Pushing ${IMAGE}:${VERSION}..."
+echo "[2/3] Pushing ${IMAGE}:${VERSION}..."
 docker push ${IMAGE}:${VERSION}
 
 # Push latest tag
 echo ""
-echo "[4/4] Pushing ${IMAGE}:latest..."
+echo "[3/3] Pushing ${IMAGE}:latest..."
 docker push ${IMAGE}:latest
 
 echo ""

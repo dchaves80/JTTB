@@ -24,11 +24,11 @@ The script executes these steps in order:
 
 | Step | Action |
 |------|--------|
-| 1 | Build Angular frontend (`npm run build`) |
-| 2 | Build Docker image with version tag |
-| 3 | Tag image as `latest` |
-| 4 | Push version tag to Docker Hub |
-| 5 | Push `latest` tag to Docker Hub |
+| 1 | Build Docker image (multi-stage: frontend builds inside) |
+| 2 | Push version tag to Docker Hub |
+| 3 | Push `latest` tag to Docker Hub |
+
+The Dockerfile uses multi-stage build, so the Angular frontend is compiled inside Docker - no local Node.js required.
 
 ---
 
@@ -39,10 +39,9 @@ The script executes these steps in order:
   JTTB Build & Push - v1.2
 ========================================
 
-[1/4] Building Angular frontend...
-[2/4] Building Docker image...
-[3/4] Pushing edering/jttb:1.2...
-[4/4] Pushing edering/jttb:latest...
+[1/3] Building Docker image...
+[2/3] Pushing edering/jttb:1.2...
+[3/3] Pushing edering/jttb:latest...
 
 ========================================
   Done! Published:
@@ -57,7 +56,6 @@ Remember to update Docker Hub description!
 
 ## Requirements
 
-- Node.js and npm installed
 - Docker installed and running
 - Logged in to Docker Hub (`docker login`)
 
