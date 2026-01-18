@@ -10,8 +10,19 @@
       <span class="status">Connected</span>
     </div>
     <div class="header-right">
-      <a href="https://ko-fi.com/edering" target="_blank" class="kofi-btn" title="Ko-fi">☕</a>
-      <a href="https://paypal.me/ederingar" target="_blank" class="paypal-btn" title="PayPal">💳</a>
+      <div class="donate-dropdown">
+        <span class="donate-btn" title="Support">❤️</span>
+        <div class="donate-menu">
+          <span class="donate-title">Support JTTB</span>
+          <a href="https://ko-fi.com/edering" target="_blank">☕ Ko-fi</a>
+          <a href="https://paypal.me/ederingar" target="_blank">💳 PayPal</a>
+          <span class="donate-divider"></span>
+          <span class="donate-subtitle">Mercado Pago (ARS)</span>
+          <a href="https://mpago.la/1BGY98f" target="_blank">$100</a>
+          <a href="https://mpago.la/1J9LbmG" target="_blank">$300</a>
+          <a href="https://mpago.la/2LDQsMa" target="_blank">$1000</a>
+        </div>
+      </div>
       <span class="user">{{ user }}&#64;toolbox</span>
       <button class="logout-btn" (click)="authService.logout(); router.navigate(['/login'])">
         Logout

@@ -101,17 +101,79 @@
   background: rgba(255, 80, 80, 0.1);
 }
 
-.kofi-btn, .paypal-btn {
+.donate-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.donate-btn {
   font-size: 18px;
-  text-decoration: none;
   opacity: 0.7;
   transition: all 0.3s ease;
   cursor: pointer;
 }
 
-.kofi-btn:hover, .paypal-btn:hover {
+.donate-dropdown:hover .donate-btn {
   opacity: 1;
   transform: scale(1.2);
+}
+
+.donate-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: #1a1a2e;
+  border: 1px solid #3a3a5a;
+  border-radius: 8px;
+  padding: 12px 0;
+  min-width: 160px;
+  z-index: 100;
+  margin-top: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+.donate-dropdown:hover .donate-menu {
+  display: block;
+}
+
+.donate-title {
+  display: block;
+  padding: 6px 16px 10px;
+  color: #00ff88;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.donate-subtitle {
+  display: block;
+  padding: 6px 16px;
+  color: #666;
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.donate-divider {
+  display: block;
+  height: 1px;
+  background: #3a3a5a;
+  margin: 8px 0;
+}
+
+.donate-menu a {
+  display: block;
+  padding: 8px 16px;
+  color: #ccc;
+  text-decoration: none;
+  font-size: 13px;
+  transition: all 0.2s;
+}
+
+.donate-menu a:hover {
+  background: rgba(0, 255, 136, 0.1);
+  color: #00ff88;
 }
 
 .terminal-output {
