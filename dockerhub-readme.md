@@ -52,12 +52,14 @@ Full docs at https://github.com/dchaves80/JTTB
 # 🏷️ Tags
 
 - `latest` - Latest stable release
+- `1.2` - Version 1.2 (Ko-fi + PayPal support)
 - `1.0` - Version 1.0
 
 ---
 
 # ☕ Support
 
-If JTTB helped you, consider buying me a coffee:
+If JTTB helped you, consider supporting the project:
 
-https://ko-fi.com/edering
+- Ko-fi: https://ko-fi.com/edering
+- PayPal: https://paypal.me/ederingar

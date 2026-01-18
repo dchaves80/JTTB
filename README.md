@@ -68,9 +68,10 @@ Access at `http://localhost:8080`
 
 ## Support
 
-If JTTB helped you, consider buying me a coffee:
+If JTTB helped you, consider supporting the project:
 
 [![Ko-fi](https://img.shields.io/badge/Ko--fi-Support%20Me-ff5f5f?logo=ko-fi&logoColor=white)](https://ko-fi.com/edering)
+[![PayPal](https://img.shields.io/badge/PayPal-Donate-00457C?logo=paypal&logoColor=white)](https://paypal.me/ederingar)
 
 ---
 

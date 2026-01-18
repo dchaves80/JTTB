@@ -142,7 +142,14 @@
   gap: 10px;
 }
 
-.kofi-link {
+.support-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.support-link {
   color: #00ff88;
   text-decoration: none;
   font-size: 11px;
@@ -150,7 +157,12 @@
   transition: opacity 0.3s ease;
 }
 
-.kofi-link:hover {
+.support-link:hover {
   opacity: 1;
   text-decoration: underline;
+}
+
+.separator {
+  color: #555;
+  font-size: 10px;
 }
