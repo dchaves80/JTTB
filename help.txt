@@ -1,0 +1,128 @@
+================================================================================
+                         JTTB - GUIA DE USO
+================================================================================
+
+== DNS Y CONECTIVIDAD ==
+
+  # Resolver DNS interno (formato Kubernetes)
+  nslookup <servicio>.<namespace>
+  nslookup <servicio>.<namespace>.svc.cluster.local
+
+  # Ejemplos
+  nslookup mydb.databases
+  nslookup api-service.backend
+
+  # Test puerto TCP
+  nc -zv <host> <puerto>
+  nc -zv mydb.databases 5432
+  nc -zv redis.cache 6379
+
+  # Traceroute
+  mtr <host>
+  traceroute <host>
+
+  # Escaneo de puertos
+  nmap -p <puerto> <host>
+
+================================================================================
+
+== BASES DE DATOS ==
+
+  # PostgreSQL
+  psql -h <host> -U <usuario> -d <database>
+  psql -h <host> -U <usuario> -d <database> -c "\l"        # listar DBs
+  psql -h <host> -U <usuario> -d <database> -c "\dt"       # listar tablas
+
+  # MongoDB
+  mongosh <host>:<puerto>
+  mongosh <host>:<puerto> --eval "show dbs"
+  mongostat --host <host>:<puerto>
+  mongodump --host <host> --out /tmp/backup
+
+  # SQL Server (freetds)
+  tsql -H <host> -p <puerto> -U <usuario>
+  # password: ingresar cuando lo pida
+
+  # MySQL
+  mysql -h <host> -u <usuario> -p
+
+  # Redis
+  redis-cli -h <host> -p 6379
+
+================================================================================
+
+== HTTP / APIs ==
+
+  # Test endpoints de salud
+  curl http://<servicio>.<namespace>:<puerto>/health
+
+  # Con headers
+  curl -H "Content-Type: application/json" http://<url>
+
+  # POST con datos
+  curl -X POST -H "Content-Type: application/json" -d '{"key":"value"}' http://<url>
+
+  # Ver respuesta completa
+  curl -v http://<url>
+
+  # Solo headers
+  curl -I http://<url>
+
+  # Descargar archivo
+  wget http://<url>/archivo
+
+================================================================================
+
+== SSL / CERTIFICADOS ==
+
+  # Test conexion SSL
+  openssl s_client -connect <host>:443
+
+  # Ver certificado
+  openssl s_client -connect <host>:443 -showcerts
+
+================================================================================
+
+== RED / DEBUG ==
+
+  # Capturar trafico (requiere privilegios)
+  tcpdump -i any port <puerto>
+
+  # Ver conexiones activas
+  netstat -tulpn
+  ss -tulpn
+
+  # Info de red
+  ip addr
+  ip route
+
+  # Ping
+  ping <host>
+
+================================================================================
+
+== FORMATO DE SERVICIOS KUBERNETES ==
+
+  Formato completo:  <servicio>.<namespace>.svc.cluster.local
+  Formato corto:     <servicio>.<namespace>
+
+  Ejemplos:
+    postgres.databases
+    redis.cache
+    api.backend
+    web.frontend
+    myservice.default
+
+================================================================================
+
+== ARCHIVOS UTILES ==
+
+  /etc/resolv.conf    - Config DNS del pod
+  /etc/hosts          - Hosts locales
+  /help.txt           - Esta ayuda
+
+================================================================================
+
+  Tip: Para ver esta ayuda: cat /help.txt
+
+================================================================================

@@ -1,0 +1,201 @@
+.terminal-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: #0d0d1a;
+  position: relative;
+}
+
+/* Drop overlay */
+.drop-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 255, 136, 0.1);
+  border: 3px dashed #00ff88;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  pointer-events: none;
+}
+
+.drop-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.drop-icon {
+  font-size: 48px;
+}
+
+.drop-text {
+  color: #00ff88;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.terminal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  background: #1a1a2e;
+  border-bottom: 1px solid #2a2a4a;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.logo {
+  font-size: 20px;
+  font-weight: 700;
+  color: #00ff88;
+}
+
+.status {
+  font-size: 12px;
+  color: #00ff88;
+  padding: 4px 10px;
+  background: rgba(0, 255, 136, 0.1);
+  border-radius: 12px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.user {
+  font-size: 14px;
+  color: #888;
+}
+
+.logout-btn {
+  background: transparent;
+  border: 1px solid #ff5050;
+  color: #ff5050;
+  padding: 6px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  transition: all 0.3s ease;
+}
+
+.logout-btn:hover {
+  background: rgba(255, 80, 80, 0.1);
+}
+
+.terminal-output {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.welcome-message {
+  color: #00ff88;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.welcome-message pre {
+  font-size: 10px;
+  line-height: 1.2;
+  margin-bottom: 10px;
+}
+
+.welcome-message p {
+  font-size: 14px;
+  color: #00ff88;
+}
+
+.welcome-message .help-hint {
+  font-size: 12px;
+  color: #666;
+  margin-top: 8px;
+}
+
+.command-block {
+  margin-bottom: 15px;
+}
+
+.command-line {
+  display: flex;
+  gap: 10px;
+}
+
+.prompt {
+  color: #00ff88;
+  white-space: nowrap;
+}
+
+.command {
+  color: #fff;
+}
+
+.output {
+  margin-top: 5px;
+  padding-left: 0;
+}
+
+.output pre {
+  color: #ccc;
+  white-space: pre-wrap;
+  word-break: break-all;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.error {
+  margin-top: 5px;
+}
+
+.error pre {
+  color: #ff5050;
+  white-space: pre-wrap;
+  word-break: break-all;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.terminal-input {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px 20px;
+  background: #1a1a2e;
+  border-top: 1px solid #2a2a4a;
+}
+
+.terminal-input input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 16px;
+  outline: none;
+}
+
+.terminal-input input:disabled {
+  opacity: 0.5;
+}
+
+.loading-indicator {
+  color: #00ff88;
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}

@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: toolbox
+  namespace: toolbox
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: toolbox
+  template:
+    metadata:
+      labels:
+        app: toolbox
+    spec:
+      containers:
+      - name: toolbox
+        image: 31.220.97.77:5000/jttb:1.0
+        imagePullPolicy: Always
+        env:
+        - name: JTTB_JWT_SECRET
+          value: "jttb-secret-key-change-me"
+        - name: JTTB_USER
+          value: "admin"
+        - name: JTTB_PASSWORD
+          value: "admin123"
+        - name: JTTB_SHELL
+          value: "sh"
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"

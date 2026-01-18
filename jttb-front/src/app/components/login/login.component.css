@@ -1,0 +1,124 @@
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+}
+
+.login-box {
+  background: rgba(30, 30, 50, 0.9);
+  border: 1px solid #3a3a5a;
+  border-radius: 12px;
+  padding: 40px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.logo {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.logo-text {
+  font-size: 48px;
+  font-weight: 700;
+  color: #00ff88;
+  display: block;
+  text-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+}
+
+.logo-subtitle {
+  font-size: 14px;
+  color: #888;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.input-group label {
+  font-size: 12px;
+  color: #aaa;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.input-group input {
+  background: #2a2a4a;
+  border: 1px solid #3a3a5a;
+  border-radius: 6px;
+  padding: 14px 16px;
+  font-size: 16px;
+  color: #fff;
+  font-family: 'JetBrains Mono', monospace;
+  transition: all 0.3s ease;
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: #00ff88;
+  box-shadow: 0 0 10px rgba(0, 255, 136, 0.2);
+}
+
+.input-group input::placeholder {
+  color: #555;
+}
+
+.input-group input:disabled {
+  opacity: 0.6;
+}
+
+.error-message {
+  background: rgba(255, 50, 50, 0.1);
+  border: 1px solid #ff5050;
+  color: #ff5050;
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.login-btn {
+  background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
+  border: none;
+  border-radius: 6px;
+  padding: 14px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #1a1a2e;
+  cursor: pointer;
+  font-family: 'JetBrains Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+}
+
+.login-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3);
+}
+
+.login-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.footer {
+  text-align: center;
+  margin-top: 30px;
+  color: #555;
+  font-size: 12px;
+}
