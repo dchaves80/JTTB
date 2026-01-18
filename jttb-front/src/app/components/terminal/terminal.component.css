@@ -113,6 +113,14 @@
   animation: heartbeat 1.5s ease-in-out infinite;
 }
 
+.support-text {
+  font-size: 11px;
+  color: #00ff88;
+  vertical-align: middle;
+  margin-left: 2px;
+  opacity: 0.8;
+}
+
 @keyframes heartbeat {
   0% { transform: scale(1); }
   25% { transform: scale(1.5); }
