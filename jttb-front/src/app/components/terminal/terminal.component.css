@@ -113,11 +113,12 @@
 }
 
 @keyframes heartbeat {
-  0%, 100% { transform: scale(1); opacity: 0.6; }
-  10% { transform: scale(1.5); opacity: 1; }
-  20% { transform: scale(1); opacity: 0.8; }
-  30% { transform: scale(1.4); opacity: 1; }
-  40%, 100% { transform: scale(1); opacity: 0.6; }
+  0% { transform: scale(0.8); opacity: 0.5; }
+  5% { transform: scale(1.6); opacity: 1; }
+  10% { transform: scale(0.9); opacity: 0.7; }
+  15% { transform: scale(1.5); opacity: 1; }
+  25% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(0.8); opacity: 0.5; }
 }
 
 .donate-dropdown:hover .donate-btn {
