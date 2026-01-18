@@ -6,36 +6,35 @@ Technical overview of JTTB's design and components.
 
 ## High-Level Overview
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                     JTTB Container (Alpine)                     │
-│                                                                 │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │                    Supervisord                           │   │
-│  │              (Process Manager - PID 1)                   │   │
-│  └─────────────────────────────────────────────────────────┘   │
-│           │                              │                      │
-│           ▼                              ▼                      │
-│  ┌─────────────────┐          ┌─────────────────────────┐      │
-│  │  Nginx (:80)    │          │  Node.js Backend (:3000)│      │
-│  │                 │  /api/*  │                         │      │
-│  │  Static Files   │ ───────► │  - Authentication       │      │
-│  │  (Angular SPA)  │          │  - Command Execution    │      │
-│  │                 │          │  - File Transfer        │      │
-│  └─────────────────┘          └─────────────────────────┘      │
-│           │                              │                      │
-│           │                              ▼                      │
-│           │                   ┌─────────────────────────┐      │
-│           │                   │   child_process.exec()  │      │
-│           │                   │                         │      │
-│           │                   │  psql, mongosh, curl,   │      │
-│           │                   │  nmap, netcat, etc.     │      │
-│           │                   └─────────────────────────┘      │
-│           ▼                                                     │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │                    Browser (User)                        │   │
-│  └─────────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    subgraph container["JTTB Container (Alpine)"]
+        subgraph supervisor["Supervisord (PID 1)"]
+            direction LR
+        end
+
+        subgraph nginx["Nginx :80"]
+            static["Static Files<br/>(Angular SPA)"]
+        end
+
+        subgraph backend["Node.js Backend :3000"]
+            auth["Authentication"]
+            exec["Command Execution"]
+            files["File Transfer"]
+        end
+
+        subgraph tools["System Tools"]
+            db["psql, mongosh<br/>tsql, mysql<br/>redis-cli"]
+            net["curl, nmap<br/>netcat, nslookup"]
+        end
+
+        supervisor --> nginx
+        supervisor --> backend
+        nginx -->|"/api/*"| backend
+        backend -->|"child_process.exec()"| tools
+    end
+
+    browser["Browser (User)"] <--> nginx
 ```
 
 ---
@@ -48,11 +47,12 @@ Technical overview of JTTB's design and components.
 
 Manages both Nginx and the Node.js backend, ensuring they stay running.
 
-```
-[supervisord]
-├── startup-banner (runs once)
-├── nginx (autorestart)
-└── jttb-backend (autorestart)
+```mermaid
+flowchart LR
+    supervisord["Supervisord"]
+    supervisord --> banner["startup-banner<br/>(runs once)"]
+    supervisord --> nginx["nginx<br/>(autorestart)"]
+    supervisord --> backend["jttb-backend<br/>(autorestart)"]
 ```
 
 ### 2. Nginx
@@ -101,32 +101,26 @@ Manages both Nginx and the Node.js backend, ensuring they stay running.
 
 ## Authentication Flow
 
-```
-┌──────────┐         ┌──────────┐         ┌──────────┐
-│  Browser │         │  Nginx   │         │ Backend  │
-└────┬─────┘         └────┬─────┘         └────┬─────┘
-     │                    │                    │
-     │ POST /api/auth/login                    │
-     │ {username, password}                    │
-     │───────────────────►│                    │
-     │                    │───────────────────►│
-     │                    │                    │ Verify password
-     │                    │                    │ (bcrypt.compare)
-     │                    │◄───────────────────│
-     │◄───────────────────│ {token, expiresIn} │
-     │                    │                    │
-     │ Store token        │                    │
-     │ (localStorage)     │                    │
-     │                    │                    │
-     │ POST /api/exec     │                    │
-     │ Authorization: Bearer <token>           │
-     │───────────────────►│                    │
-     │                    │───────────────────►│
-     │                    │                    │ Verify JWT
-     │                    │                    │ Execute command
-     │                    │◄───────────────────│
-     │◄───────────────────│ {stdout, stderr}   │
-     │                    │                    │
+```mermaid
+sequenceDiagram
+    participant B as Browser
+    participant N as Nginx
+    participant S as Backend
+
+    B->>N: POST /api/auth/login<br/>{username, password}
+    N->>S: Forward request
+    S->>S: Verify password (bcrypt)
+    S-->>N: {token, expiresIn}
+    N-->>B: JWT Token
+
+    Note over B: Store token in localStorage
+
+    B->>N: POST /api/exec<br/>Authorization: Bearer <token>
+    N->>S: Forward request
+    S->>S: Verify JWT
+    S->>S: Execute command
+    S-->>N: {stdout, stderr}
+    N-->>B: Command output
 ```
 
 ---
@@ -153,24 +147,32 @@ exec(command, {
 
 ---
 
-## Docker Image Layers
+## Docker Build Process
 
-```dockerfile
-# Stage 1: Build Angular frontend
-FROM node:20-alpine AS frontend-build
-# npm install + npm run build:prod
+```mermaid
+flowchart LR
+    subgraph stage1["Stage 1: Frontend Build"]
+        node1["node:20-alpine"]
+        npm1["npm install"]
+        build["npm run build:prod"]
+        node1 --> npm1 --> build
+    end
 
-# Stage 2: Build backend dependencies
-FROM node:20-alpine AS backend-build
-# npm install --production
+    subgraph stage2["Stage 2: Backend Build"]
+        node2["node:20-alpine"]
+        npm2["npm install --production"]
+        node2 --> npm2
+    end
 
-# Stage 3: Final image
-FROM alpine:3.19
-# Install: nodejs, nginx, supervisor
-# Install: curl, wget, nmap, netcat, etc.
-# Install: psql, mongosh, tsql, mysql, redis-cli
-# Copy: built frontend, backend, configs
-# CMD: supervisord
+    subgraph stage3["Stage 3: Final Image"]
+        alpine["alpine:3.19"]
+        tools["Install tools:<br/>nginx, psql, mongosh,<br/>nmap, curl, etc."]
+        copy["Copy built assets"]
+        alpine --> tools --> copy
+    end
+
+    stage1 --> stage3
+    stage2 --> stage3
 ```
 
 **Final image size:** ~200MB (includes all debugging tools)
@@ -217,3 +219,33 @@ FROM alpine:3.19
 | Memory | 128Mi | 512Mi |
 
 Adjust based on expected usage. Heavy database queries or file transfers may require more memory.
+
+---
+
+## Network Flow in Kubernetes
+
+```mermaid
+flowchart LR
+    subgraph cluster["Kubernetes Cluster"]
+        subgraph ns1["Namespace: toolbox"]
+            jttb["JTTB Pod<br/>:80"]
+        end
+
+        subgraph ns2["Namespace: databases"]
+            pg["PostgreSQL<br/>:5432"]
+            mongo["MongoDB<br/>:27017"]
+            redis["Redis<br/>:6379"]
+        end
+
+        subgraph ns3["Namespace: backend"]
+            api["API Services<br/>:3000"]
+        end
+
+        jttb -.->|"DNS: postgres.databases"| pg
+        jttb -.->|"DNS: mongodb.databases"| mongo
+        jttb -.->|"DNS: redis.cache"| redis
+        jttb -.->|"DNS: api.backend"| api
+    end
+
+    user["User"] -->|"NodePort / Ingress"| jttb
+```
