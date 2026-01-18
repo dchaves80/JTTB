@@ -53,3 +53,11 @@ Full docs at https://github.com/dchaves80/JTTB
 
 - `latest` - Latest stable release
 - `1.0` - Version 1.0
+
+---
+
+# ☕ Support
+
+If JTTB helped you, consider buying me a coffee:
+
+https://ko-fi.com/edering

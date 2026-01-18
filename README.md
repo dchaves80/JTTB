@@ -2,6 +2,7 @@
 
 [![Docker Hub](https://img.shields.io/docker/v/edering/jttb?label=Docker%20Hub&logo=docker)](https://hub.docker.com/r/edering/jttb)
 [![GitHub](https://img.shields.io/badge/GitHub-Source-black?logo=github)](https://github.com/dchaves80/JTTB)
+[![Ko-fi](https://img.shields.io/badge/Ko--fi-Support%20Me-ff5f5f?logo=ko-fi)](https://ko-fi.com/edering)
 
 A web-based terminal for Kubernetes cluster debugging and administration.
 
@@ -62,6 +63,14 @@ Access at `http://localhost:8080`
 | Container | Alpine Linux 3.19 |
 | Process Manager | Supervisord |
 | Reverse Proxy | Nginx |
+
+---
+
+## Support
+
+If JTTB helped you, consider buying me a coffee:
+
+[![Ko-fi](https://img.shields.io/badge/Ko--fi-Support%20Me-ff5f5f?logo=ko-fi&logoColor=white)](https://ko-fi.com/edering)
 
 ---
 

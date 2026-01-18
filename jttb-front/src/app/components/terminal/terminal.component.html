@@ -5,10 +5,12 @@
      (drop)="onDrop($event)">
   <div class="terminal-header">
     <div class="header-left">
+      <img src="assets/logo-edr.png" alt="EdR" class="edr-mini">
       <span class="logo">JTTB</span>
       <span class="status">Connected</span>
     </div>
     <div class="header-right">
+      <a href="https://ko-fi.com/edering" target="_blank" class="kofi-btn" title="Support this project">☕</a>
       <span class="user">{{ user }}&#64;toolbox</span>
       <button class="logout-btn" (click)="authService.logout(); router.navigate(['/login'])">
         Logout

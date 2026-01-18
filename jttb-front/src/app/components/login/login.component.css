@@ -116,9 +116,41 @@
   cursor: not-allowed;
 }
 
+.edr-badge {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.edr-logo {
+  width: 50px;
+  height: auto;
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
+}
+
+.edr-logo:hover {
+  opacity: 1;
+}
+
 .footer {
   text-align: center;
   margin-top: 30px;
   color: #555;
   font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.kofi-link {
+  color: #00ff88;
+  text-decoration: none;
+  font-size: 11px;
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+
+.kofi-link:hover {
+  opacity: 1;
+  text-decoration: underline;
 }
