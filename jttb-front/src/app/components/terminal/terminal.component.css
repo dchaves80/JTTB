@@ -109,15 +109,16 @@
 .donate-btn {
   font-size: 24px;
   cursor: pointer;
-  animation: heartbeat 2s ease-in-out infinite;
+  display: inline-block;
+  animation: heartbeat 1.5s ease-in-out infinite;
 }
 
 @keyframes heartbeat {
-  0%, 100% { transform: scale(1); }
-  15% { transform: scale(1.8); }
-  30% { transform: scale(1); }
-  45% { transform: scale(1.6); }
-  60% { transform: scale(1); }
+  0% { transform: scale(1); }
+  25% { transform: scale(1.5); }
+  50% { transform: scale(1); }
+  75% { transform: scale(1.3); }
+  100% { transform: scale(1); }
 }
 
 .donate-dropdown:hover .donate-btn {
