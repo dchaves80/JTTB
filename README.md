@@ -3,6 +3,8 @@
 [![Docker Hub](https://img.shields.io/docker/v/edering/jttb?label=Docker%20Hub&logo=docker)](https://hub.docker.com/r/edering/jttb)
 [![GitHub](https://img.shields.io/badge/GitHub-Source-black?logo=github)](https://github.com/dchaves80/JTTB)
 [![Ko-fi](https://img.shields.io/badge/Ko--fi-Support%20Me-ff5f5f?logo=ko-fi)](https://ko-fi.com/edering)
+[![PayPal](https://img.shields.io/badge/PayPal-Donate-00457C?logo=paypal)](https://paypal.me/ederingar)
+[![Mercado Pago](https://img.shields.io/badge/Mercado%20Pago-Donate-00bcff)](https://mpago.la/1J9LbmG)
 
 A web-based terminal for Kubernetes cluster debugging and administration.
 
