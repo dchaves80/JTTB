@@ -107,7 +107,7 @@
 }
 
 .donate-btn {
-  font-size: 18px;
+  font-size: 24px;
   cursor: pointer;
   animation: heartbeat 2s ease-in-out infinite;
 }
