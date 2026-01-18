@@ -74,6 +74,8 @@ If JTTB helped you, consider supporting the project:
 [![Ko-fi](https://img.shields.io/badge/Ko--fi-Support%20Me-ff5f5f?logo=ko-fi&logoColor=white)](https://ko-fi.com/edering)
 [![PayPal](https://img.shields.io/badge/PayPal-Donate-00457C?logo=paypal&logoColor=white)](https://paypal.me/ederingar)
 
+**Mercado Pago (ARS):** [$100](https://mpago.la/1BGY98f) | [$300](https://mpago.la/1J9LbmG) | [$1000](https://mpago.la/2LDQsMa)
+
 ---
 
 ## License

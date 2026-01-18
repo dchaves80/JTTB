@@ -166,3 +166,32 @@
   color: #555;
   font-size: 10px;
 }
+
+.mp-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.mp-label {
+  color: #555;
+  font-size: 10px;
+}
+
+.mp-link {
+  color: #00bcff;
+  text-decoration: none;
+  font-size: 11px;
+  padding: 2px 8px;
+  border: 1px solid #00bcff;
+  border-radius: 4px;
+  opacity: 0.7;
+  transition: all 0.3s ease;
+}
+
+.mp-link:hover {
+  opacity: 1;
+  background: rgba(0, 188, 255, 0.1);
+}

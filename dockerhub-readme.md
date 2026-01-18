@@ -53,6 +53,7 @@ Full docs at https://github.com/dchaves80/JTTB
 
 - `latest` - Latest stable release
 - `1.2` - Version 1.2 (Ko-fi + PayPal support)
+- `1.1` - Version 1.1
 - `1.0` - Version 1.0
 
 ---
@@ -63,3 +64,4 @@ If JTTB helped you, consider supporting the project:
 
 - Ko-fi: https://ko-fi.com/edering
 - PayPal: https://paypal.me/ederingar
+- Mercado Pago (ARS): [$100](https://mpago.la/1BGY98f) | [$300](https://mpago.la/1J9LbmG) | [$1000](https://mpago.la/2LDQsMa)
