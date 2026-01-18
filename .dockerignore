@@ -1,0 +1,29 @@
+# Dependencies
+**/node_modules
+
+# Git
+.git
+.gitignore
+
+# Documentation
+docs/
+*.md
+!README.md
+
+# Development
+dev.sh
+dev.bat
+.vscode
+.idea
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+jttb-front/dist
+jttb-front/.angular
