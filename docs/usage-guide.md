@@ -16,7 +16,7 @@ After logging in, you'll see the terminal interface:
 ╚█████╔╝   ██║      ██║   ██████╔╝
  ╚════╝    ╚═╝      ╚═╝   ╚═════╝
 
-JTTB - Terminal Toolbox v1.3
+JTTB - Terminal Toolbox v1.4
 Type 'help' for commands
 
 JTTB:[~]$ _
