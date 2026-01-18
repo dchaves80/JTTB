@@ -36,6 +36,7 @@ JTTB provides a secure web terminal with built-in tools for debugging connectivi
 | [Configuration](docs/configuration.md) | Environment variables and settings |
 | [Usage Guide](docs/usage-guide.md) | Terminal commands and features |
 | [Architecture](docs/architecture.md) | Technical design and stack |
+| [Development](docs/development.md) | Run locally for development |
 | [Build Script](docs/build-script.md) | Automate Docker builds and pushes |
 
 ---
