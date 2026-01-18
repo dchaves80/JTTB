@@ -52,6 +52,7 @@ Full docs at https://github.com/dchaves80/JTTB
 # 🏷️ Tags
 
 - `latest` - Latest stable release
+- `1.3` - Version 1.3 (Mercado Pago support)
 - `1.2` - Version 1.2 (Ko-fi + PayPal support)
 - `1.1` - Version 1.1
 - `1.0` - Version 1.0
