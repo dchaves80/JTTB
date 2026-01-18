@@ -106,9 +106,14 @@
   display: inline-block;
 }
 
-.donate-btn {
-  font-size: 24px;
+.donate-trigger {
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+}
+
+.heart-icon {
+  font-size: 24px;
   display: inline-block;
   animation: heartbeat 1.5s ease-in-out infinite;
 }
@@ -116,8 +121,7 @@
 .support-text {
   font-size: 11px;
   color: #00ff88;
-  vertical-align: middle;
-  margin-left: 2px;
+  margin-left: 4px;
   opacity: 0.8;
 }
 
@@ -129,9 +133,8 @@
   100% { transform: scale(1); }
 }
 
-.donate-dropdown:hover .donate-btn {
+.donate-dropdown:hover .heart-icon {
   animation: none;
-  opacity: 1;
   transform: scale(1.2);
 }
 
