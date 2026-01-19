@@ -1,8 +1,9 @@
-import { Component, ElementRef, ViewChild, AfterViewChecked, HostListener } from '@angular/core';
+import { Component, ElementRef, ViewChild, AfterViewChecked, HostListener, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { AuthService } from '../../services/auth.service';
 import { environment } from '../../../environments/environment';
 
@@ -41,17 +42,128 @@ export class TerminalComponent implements AfterViewChecked {
   searchTerm = '';
   currentMatch = 0;
   totalMatches = 0;
+  matchingLines: { index: number; text: string; type: 'stdout' | 'stderr' }[] = [];
+
+  // Favorites
+  favorites: string[] = [];
+  showFavorites = false;
+  preventScroll = false;
+  newFavorite = '';
+  private lastScrollTime = 0;
 
   constructor(
     private http: HttpClient,
+    private sanitizer: DomSanitizer,
+    private cdr: ChangeDetectorRef,
     public authService: AuthService,
     public router: Router
   ) {
     this.user = this.authService.getUser() || 'user';
+    this.loadFavorites();
+  }
+
+  // Favorites methods
+  loadFavorites(): void {
+    const saved = localStorage.getItem('jttb-favorites');
+    if (saved) {
+      this.favorites = JSON.parse(saved);
+    }
+  }
+
+  saveFavorites(): void {
+    localStorage.setItem('jttb-favorites', JSON.stringify(this.favorites));
+  }
+
+  addFavorite(command: string): void {
+    if (command && !this.favorites.includes(command)) {
+      this.favorites.push(command);
+      this.saveFavorites();
+    }
+  }
+
+  addNewFavorite(): void {
+    const cmd = this.newFavorite.trim();
+    if (cmd) {
+      this.addFavorite(cmd);
+      this.newFavorite = '';
+    }
+  }
+
+  removeFavorite(command: string): void {
+    this.favorites = this.favorites.filter(f => f !== command);
+    this.saveFavorites();
+  }
+
+  isFavorite(command: string): boolean {
+    return this.favorites.includes(command);
+  }
+
+  onFavoriteClick(event: Event, command: string): void {
+    event.preventDefault();
+    event.stopPropagation();
+
+    // Capture scroll position BEFORE any changes
+    const scrollTop = this.terminalOutput?.nativeElement?.scrollTop || 0;
+
+    this.preventScroll = true;
+    this.lastScrollTime = Date.now() + 5000; // Block scroll for 5 seconds
+
+    if (this.isFavorite(command)) {
+      this.removeFavorite(command);
+    } else {
+      this.addFavorite(command);
+    }
+
+    // Restore scroll position after Angular processes changes
+    setTimeout(() => {
+      if (this.terminalOutput?.nativeElement) {
+        this.terminalOutput.nativeElement.scrollTop = scrollTop;
+      }
+    }, 0);
+
+    setTimeout(() => {
+      if (this.terminalOutput?.nativeElement) {
+        this.terminalOutput.nativeElement.scrollTop = scrollTop;
+      }
+    }, 50);
+
+    setTimeout(() => {
+      if (this.terminalOutput?.nativeElement) {
+        this.terminalOutput.nativeElement.scrollTop = scrollTop;
+      }
+      this.preventScroll = false;
+    }, 200);
+  }
+
+  toggleFavorite(command: string): void {
+    if (this.isFavorite(command)) {
+      this.removeFavorite(command);
+    } else {
+      this.addFavorite(command);
+    }
+  }
+
+  useFavorite(command: string): void {
+    this.currentCommand = command;
+    this.showFavorites = false;
+    this.focusInput();
+  }
+
+  toggleFavoritesPanel(): void {
+    this.showFavorites = !this.showFavorites;
+    if (this.showFavorites) {
+      this.showSearch = false;
+    }
   }
 
   ngAfterViewChecked(): void {
-    this.scrollToBottom();
+    if (!this.preventScroll && !this.loading) {
+      const now = Date.now();
+      if (now - this.lastScrollTime > 100) {
+        this.scrollToBottom();
+        this.lastScrollTime = now;
+      }
+    }
   }
 
   executeCommand(): void {
@@ -186,6 +298,15 @@ export class TerminalComponent implements AfterViewChecked {
     if (this.commandInput) {
       this.commandInput.nativeElement.focus();
     }
+  }
+
+  onContainerClick(event: Event): void {
+    const target = event.target as HTMLElement;
+    // Don't focus input if clicking on favorite button or toolbar
+    if (target.closest('.favorite-btn') || target.closest('.toolbar-btn') || target.closest('.favorites-panel')) {
+      return;
+    }
+    this.focusInput();
   }
 
   // Acortar el path para el prompt
@@ -384,50 +505,74 @@ Mas ayuda: cat /help.txt
 
   onSearch(): void {
     if (!this.searchTerm) {
-      this.currentMatch = 0;
       this.totalMatches = 0;
+      this.matchingLines = [];
       return;
     }
-    this.countMatches();
-    if (this.totalMatches > 0) {
-      this.currentMatch = 1;
-    }
+    this.findMatches();
   }
 
-  countMatches(): void {
+  findMatches(): void {
     const term = this.searchTerm.toLowerCase();
+    this.matchingLines = [];
     let count = 0;
-    for (const item of this.history) {
-      if (item.stdout) {
-        count += (item.stdout.toLowerCase().match(new RegExp(this.escapeRegex(term), 'g')) || []).length;
+
+    for (let i = 0; i < this.history.length; i++) {
+      const item = this.history[i];
+      if (item.stdout && item.stdout.toLowerCase().includes(term)) {
+        const lines = item.stdout.split('\n').filter(line => line.toLowerCase().includes(term));
+        for (const line of lines) {
+          this.matchingLines.push({ index: i, text: line.trim().substring(0, 80), type: 'stdout' });
+          count++;
+        }
       }
-      if (item.stderr) {
-        count += (item.stderr.toLowerCase().match(new RegExp(this.escapeRegex(term), 'g')) || []).length;
+      if (item.stderr && item.stderr.toLowerCase().includes(term)) {
+        const lines = item.stderr.split('\n').filter(line => line.toLowerCase().includes(term));
+        for (const line of lines) {
+          this.matchingLines.push({ index: i, text: line.trim().substring(0, 80), type: 'stderr' });
+          count++;
+        }
       }
     }
     this.totalMatches = count;
   }
 
-  nextMatch(): void {
-    if (this.totalMatches > 0) {
-      this.currentMatch = this.currentMatch >= this.totalMatches ? 1 : this.currentMatch + 1;
-    }
+  scrollToHistoryItem(index: number): void {
+    setTimeout(() => {
+      const container = this.terminalOutput.nativeElement;
+      const blocks = container.querySelectorAll('.command-block');
+      const target = blocks[index] as HTMLElement;
+      if (target && container) {
+        const containerRect = container.getBoundingClientRect();
+        const targetRect = target.getBoundingClientRect();
+        container.scrollTop = container.scrollTop + (targetRect.top - containerRect.top) - 50;
+      }
+    }, 50);
   }
 
-  prevMatch(): void {
-    if (this.totalMatches > 0) {
-      this.currentMatch = this.currentMatch <= 1 ? this.totalMatches : this.currentMatch - 1;
+  highlightText(text: string): SafeHtml {
+    if (!this.searchTerm || !text) {
+      return this.sanitizer.bypassSecurityTrustHtml(this.escapeHtml(text));
     }
-  }
-
-  highlightText(text: string): string {
-    if (!this.searchTerm || !text) return this.escapeHtml(text);
 
     const escaped = this.escapeHtml(text);
     const term = this.escapeHtml(this.searchTerm);
     const regex = new RegExp(`(${this.escapeRegex(term)})`, 'gi');
 
-    return escaped.replace(regex, '<span class="search-highlight">$1</span>');
+    const highlighted = escaped.replace(regex, (match) => {
+      this.globalMatchIndex++;
+      const isCurrent = this.globalMatchIndex === this.currentMatch;
+      return `<span class="search-highlight${isCurrent ? ' current' : ''}">${match}</span>`;
+    });
+    return this.sanitizer.bypassSecurityTrustHtml(highlighted);
+  }
+
+  // Reset global match index before each render cycle
+  private globalMatchIndex = 0;
+
+  resetMatchIndex(): string {
+    this.globalMatchIndex = 0;
+    return '';
   }
 
   escapeHtml(text: string): string {

@@ -1,5 +1,5 @@
 <div class="terminal-container"
-     (click)="focusInput()"
+     (click)="onContainerClick($event)"
      (dragover)="onDragOver($event)"
      (dragleave)="onDragLeave($event)"
      (drop)="onDrop($event)">
@@ -23,7 +23,6 @@
           <a href="https://mpago.la/2LDQsMa" target="_blank">$1000</a>
         </div>
       </div>
-      <span class="user">{{ user }}&#64;toolbox</span>
       <button class="logout-btn" (click)="authService.logout(); router.navigate(['/login'])">
         Logout
       </button>
@@ -35,6 +34,10 @@
     <button class="toolbar-btn" (click)="toggleSearch()" [class.active]="showSearch" title="Search (Ctrl+F)">
       🔍 <span>Search</span>
     </button>
+    <button class="toolbar-btn" (click)="toggleFavoritesPanel()" [class.active]="showFavorites" title="Favorites">
+      ⭐ <span>Favorites</span>
+      <span class="badge" *ngIf="favorites.length">{{ favorites.length }}</span>
+    </button>
   </div>
 
   <!-- Search bar -->
@@ -44,14 +47,11 @@
       type="text"
       [(ngModel)]="searchTerm"
       (input)="onSearch()"
-      (keydown.enter)="nextMatch()"
       (keydown.escape)="toggleSearch()"
       placeholder="Search in output..."
       autofocus
     >
-    <span class="search-count" *ngIf="searchTerm">{{ currentMatch }}/{{ totalMatches }}</span>
-    <button class="search-nav" (click)="prevMatch()" title="Previous">▲</button>
-    <button class="search-nav" (click)="nextMatch()" title="Next">▼</button>
+    <span class="search-count" *ngIf="searchTerm">{{ totalMatches }} matches</span>
     <button class="search-close" (click)="toggleSearch()" title="Close (Esc)">✕</button>
   </div>
 
@@ -63,6 +63,7 @@
     </div>
   </div>
 
+  <div class="terminal-body">
   <div class="terminal-output" #terminalOutput>
     <div class="welcome-message">
       <pre>
@@ -77,10 +78,14 @@
       <p class="help-hint">Type 'help' for commands</p>
     </div>
 
+    <span style="display:none">{{ resetMatchIndex() }}</span>
     <div *ngFor="let item of history" class="command-block">
       <div class="command-line">
         <span class="prompt">JTTB:[{{ item.cwd || '~' }}]$</span>
         <span class="command">{{ item.command }}</span>
+        <button class="favorite-btn" (click)="onFavoriteClick($event, item.command)" [class.active]="isFavorite(item.command)" title="Add to favorites">
+          {{ isFavorite(item.command) ? '★' : '☆' }}
+        </button>
       </div>
       <div class="output" *ngIf="item.stdout">
         <pre [innerHTML]="highlightText(item.stdout)"></pre>
@@ -89,6 +94,45 @@
         <pre [innerHTML]="highlightText(item.stderr)"></pre>
       </div>
     </div>
+  </div>
+
+  <!-- Favorites sidebar -->
+  <div class="favorites-panel" *ngIf="showFavorites">
+    <div class="favorites-header">Favorites</div>
+    <div class="favorites-add">
+      <input
+        type="text"
+        [(ngModel)]="newFavorite"
+        (keydown.enter)="addNewFavorite()"
+        placeholder="Add command..."
+      >
+      <button (click)="addNewFavorite()" title="Add">+</button>
+    </div>
+    <div class="favorites-list" *ngIf="favorites.length > 0">
+      <div *ngFor="let fav of favorites" class="favorite-item">
+        <span class="favorite-command" (click)="useFavorite(fav)">{{ fav }}</span>
+        <span class="favorite-remove" (click)="removeFavorite(fav)" title="Remove">✕</span>
+      </div>
+    </div>
+    <div class="favorites-empty" *ngIf="favorites.length === 0">
+      No favorites yet.<br>Click ☆ next to a command to add it.
+    </div>
+  </div>
+
+  <!-- Search results sidebar -->
+  <div class="search-results" *ngIf="showSearch && matchingLines.length > 0">
+    <div class="search-results-header">Results</div>
+    <div class="search-results-list">
+      <div
+        *ngFor="let match of matchingLines"
+        class="search-result-item"
+        [class.error]="match.type === 'stderr'"
+        (click)="scrollToHistoryItem(match.index)">
+        <span class="result-index">#{{ match.index + 1 }}</span>
+        <span class="result-text">{{ match.text }}</span>
+      </div>
+    </div>
+  </div>
   </div>
 
   <div class="terminal-input">
