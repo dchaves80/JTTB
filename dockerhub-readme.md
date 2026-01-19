@@ -27,6 +27,9 @@ Access at http://localhost:8080
 - File upload/download (drag & drop)
 - Built-in database clients (PostgreSQL, MongoDB, SQL Server, MySQL, Redis)
 - Network debugging tools (nmap, netcat, curl, nslookup, tcpdump)
+- Search in output (Ctrl+F) with highlighting
+- Favorites system (save commands to browser)
+- CRT retro effects (scanlines, flicker, glow)
 
 ---
 
@@ -52,6 +55,7 @@ Full docs at https://github.com/dchaves80/JTTB
 # 🏷️ Tags
 
 - `latest` - Latest stable release
+- `1.5` - Version 1.5 (Search, Favorites, CRT effects)
 - `1.4` - Version 1.4 (UI improvements)
 - `1.3` - Version 1.3 (Mercado Pago support)
 - `1.2` - Version 1.2 (Ko-fi + PayPal support)
