@@ -15,7 +15,14 @@ WORKDIR /build
 COPY jttb-back/package*.json ./
 RUN npm install --production
 
-# Stage 3: Final image
+# Stage 3: Build mongocli
+FROM node:20-alpine AS mongocli-build
+WORKDIR /build
+COPY mongocli/package*.json ./
+RUN npm install --production
+COPY mongocli/mongocli.js ./
+
+# Stage 4: Final image
 FROM alpine:3.19
 
 # Instalar dependencias del sistema
@@ -47,7 +54,7 @@ RUN apk add --no-cache \
     mysql-client
 
 # Crear estructura de directorios
-RUN mkdir -p /app/jttb-back /app/jttb-front /var/log/supervisor
+RUN mkdir -p /app/jttb-back /app/jttb-front /app/mongocli /var/log/supervisor
 
 # Copiar backend
 COPY --from=backend-build /build/node_modules /app/jttb-back/node_modules
@@ -56,6 +63,12 @@ COPY jttb-back/package.json /app/jttb-back/
 
 # Copiar frontend compilado
 COPY --from=frontend-build /build/dist/jttb-frontend/browser /app/jttb-front/
+
+# Copiar mongocli y crear symlink en /usr/bin
+COPY --from=mongocli-build /build/node_modules /app/mongocli/node_modules
+COPY --from=mongocli-build /build/mongocli.js /app/mongocli/
+RUN chmod +x /app/mongocli/mongocli.js && \
+    ln -s /app/mongocli/mongocli.js /usr/bin/mongocli
 
 # Copiar configuraciones
 COPY nginx.conf /etc/nginx/http.d/default.conf

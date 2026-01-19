@@ -1,0 +1,12 @@
+{
+  "name": "mongocli",
+  "version": "1.0.0",
+  "description": "Simple MongoDB CLI client for JTTB",
+  "main": "mongocli.js",
+  "bin": {
+    "mongocli": "./mongocli.js"
+  },
+  "dependencies": {
+    "mongodb": "^6.3.0"
+  }
+}

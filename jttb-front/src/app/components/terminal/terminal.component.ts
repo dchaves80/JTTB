@@ -6,6 +6,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { AuthService } from '../../services/auth.service';
 import { environment } from '../../../environments/environment';
+import { DbBuilderComponent } from '../db-builder/db-builder.component';
 
 interface CommandResult {
   command: string;
@@ -19,7 +20,7 @@ interface CommandResult {
 @Component({
   selector: 'app-terminal',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, DbBuilderComponent],
   templateUrl: './terminal.component.html',
   styleUrl: './terminal.component.css'
 })
@@ -50,6 +51,9 @@ export class TerminalComponent implements AfterViewChecked {
   preventScroll = false;
   newFavorite = '';
   private lastScrollTime = 0;
+
+  // DB Builder
+  showDbBuilder = false;
 
   constructor(
     private http: HttpClient,
@@ -154,6 +158,20 @@ export class TerminalComponent implements AfterViewChecked {
     if (this.showFavorites) {
       this.showSearch = false;
     }
+  }
+
+  toggleDbBuilder(): void {
+    this.showDbBuilder = !this.showDbBuilder;
+    if (this.showDbBuilder) {
+      this.showFavorites = false;
+      this.showSearch = false;
+    }
+  }
+
+  executeFromDbBuilder(command: string): void {
+    this.currentCommand = command;
+    this.showDbBuilder = false;
+    this.executeCommand();
   }
 
   ngAfterViewChecked(): void {

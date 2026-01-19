@@ -25,6 +25,7 @@ Access at http://localhost:8080
 - JWT-based authentication
 - Command execution via web terminal
 - File upload/download (drag & drop)
+- **DB Command Builder** (visual query builder for databases)
 - Built-in database clients (PostgreSQL, MongoDB, SQL Server, MySQL, Redis)
 - Network debugging tools (nmap, netcat, curl, nslookup, tcpdump)
 - Search in output (Ctrl+F) with highlighting
@@ -55,6 +56,7 @@ Full docs at https://github.com/dchaves80/JTTB
 # 🏷️ Tags
 
 - `latest` - Latest stable release
+- `1.6` - Version 1.6 (DB Command Builder, mongocli)
 - `1.5` - Version 1.5 (Search, Favorites, CRT effects)
 - `1.4` - Version 1.4 (UI improvements)
 - `1.3` - Version 1.3 (Mercado Pago support)

@@ -1,0 +1,178 @@
+<div class="modal-overlay" (click)="onClose()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <span class="modal-title">
+        <span *ngIf="view === 'list'">DB Command Builder</span>
+        <span *ngIf="view === 'form'">
+          <button class="back-btn" (click)="backToList()" title="Back">&larr;</button>
+          {{ connection.id ? 'Edit' : 'New' }} Connection
+        </span>
+      </span>
+      <button class="close-btn" (click)="onClose()">&times;</button>
+    </div>
+
+    <!-- List View -->
+    <div class="modal-body" *ngIf="view === 'list'">
+      <div class="connections-list" *ngIf="savedConnections.length > 0">
+        <div class="connection-item" *ngFor="let conn of savedConnections">
+          <div class="conn-info" (click)="quickConnect(conn)">
+            <span class="conn-icon">{{ dbService.getDbTypeConfig(conn.type).icon }}</span>
+            <div class="conn-details">
+              <span class="conn-name">{{ conn.name }}</span>
+              <span class="conn-host">{{ conn.host }}:{{ conn.port }}</span>
+            </div>
+          </div>
+          <div class="conn-actions">
+            <button class="action-btn edit" (click)="editConnection(conn)" title="Edit">✎</button>
+            <button class="action-btn delete" (click)="deleteConnection(conn)" title="Delete">✕</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="empty-state" *ngIf="savedConnections.length === 0">
+        <span class="empty-icon">🗄️</span>
+        <p>No saved connections</p>
+        <p class="empty-hint">Create a new connection to get started</p>
+      </div>
+
+      <div class="new-connection-section">
+        <div class="db-type-selector">
+          <button
+            *ngFor="let item of dbService.getDbTypesList()"
+            class="db-type-btn"
+            [class.selected]="selectedType === item.type"
+            (click)="selectedType = item.type"
+            [title]="item.config.label">
+            <span class="db-icon">{{ item.config.icon }}</span>
+            <span class="db-label">{{ item.config.label }}</span>
+          </button>
+        </div>
+        <button class="new-btn" (click)="newConnection()">+ New Connection</button>
+      </div>
+    </div>
+
+    <!-- Form View -->
+    <div class="modal-body" *ngIf="view === 'form'">
+      <div class="form-grid">
+        <div class="form-row">
+          <label>Type</label>
+          <select [(ngModel)]="selectedType" (change)="onTypeChange()">
+            <option *ngFor="let item of dbService.getDbTypesList()" [value]="item.type">
+              {{ item.config.icon }} {{ item.config.label }}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label>Name</label>
+          <input type="text" [(ngModel)]="connection.name" (input)="updateCommand()" placeholder="Connection name (optional)">
+        </div>
+
+        <div class="form-row-split">
+          <div class="form-row">
+            <label>Host</label>
+            <input type="text" [(ngModel)]="connection.host" (input)="updateCommand()" placeholder="localhost">
+          </div>
+          <div class="form-row port">
+            <label>Port</label>
+            <input type="number" [(ngModel)]="connection.port" (input)="updateCommand()">
+          </div>
+        </div>
+
+        <div class="form-row-split">
+          <div class="form-row">
+            <label>User</label>
+            <input type="text" [(ngModel)]="connection.username" (input)="updateCommand()" placeholder="username">
+          </div>
+          <div class="form-row">
+            <label>Password</label>
+            <div class="password-input">
+              <input [type]="showPassword ? 'text' : 'password'" [(ngModel)]="connection.password" (input)="updateCommand()" placeholder="password">
+              <button class="toggle-pass" (click)="showPassword = !showPassword">{{ showPassword ? '🙈' : '👁️' }}</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label>Database</label>
+          <input type="text" [(ngModel)]="connection.database" (input)="updateCommand()" placeholder="database name">
+        </div>
+
+        <!-- SQL Query (non-MongoDB) -->
+        <div class="form-row" *ngIf="selectedType !== 'mongodb'">
+          <label>Query</label>
+          <textarea [(ngModel)]="query" (input)="updateCommand()" placeholder="SELECT * FROM users LIMIT 10;" rows="3"></textarea>
+        </div>
+
+        <!-- MongoDB specific fields -->
+        <ng-container *ngIf="selectedType === 'mongodb'">
+          <div class="form-row-split">
+            <div class="form-row">
+              <label>Collection</label>
+              <input type="text" [(ngModel)]="mongoQuery.collection" (input)="updateCommand()" placeholder="users">
+            </div>
+            <div class="form-row">
+              <label>Operation</label>
+              <select [(ngModel)]="mongoQuery.operation" (change)="updateCommand()">
+                <option *ngFor="let op of mongoOperations" [value]="op.value">{{ op.label }}</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Filter (for most operations) -->
+          <div class="form-row" *ngIf="getSelectedMongoOperation()?.hasFilter">
+            <label>Filter</label>
+            <textarea [(ngModel)]="mongoQuery.filter" (input)="updateCommand()" placeholder='{"active": true}' rows="2"></textarea>
+          </div>
+
+          <!-- Document (for insertOne) -->
+          <div class="form-row" *ngIf="getSelectedMongoOperation()?.extra === 'document'">
+            <label>Document</label>
+            <textarea [(ngModel)]="mongoQuery.document" (input)="updateCommand()" placeholder='{"name": "John", "email": "john@example.com"}' rows="2"></textarea>
+          </div>
+
+          <!-- Update (for updateOne) -->
+          <div class="form-row" *ngIf="getSelectedMongoOperation()?.extra === 'update'">
+            <label>Update</label>
+            <textarea [(ngModel)]="mongoQuery.update" (input)="updateCommand()" placeholder='{"$set": {"active": false}}' rows="2"></textarea>
+          </div>
+
+          <!-- Pipeline (for aggregate) -->
+          <div class="form-row" *ngIf="getSelectedMongoOperation()?.extra === 'pipeline'">
+            <label>Pipeline</label>
+            <textarea [(ngModel)]="mongoQuery.pipeline" (input)="updateCommand()" placeholder='[{"$match": {}}, {"$group": {"_id": "$field"}}]' rows="3"></textarea>
+          </div>
+
+          <!-- Limit (for find) -->
+          <div class="form-row-split" *ngIf="mongoQuery.operation === 'find'">
+            <div class="form-row">
+              <label>Limit</label>
+              <input type="number" [(ngModel)]="mongoQuery.limit" (input)="updateCommand()" placeholder="10">
+            </div>
+            <div class="form-row">
+              <label>Sort</label>
+              <input type="text" [(ngModel)]="mongoQuery.sort" (input)="updateCommand()" placeholder='{"createdAt": -1}'>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+
+      <div class="command-preview" *ngIf="generatedCommand">
+        <div class="preview-header">
+          <span>Generated Command</span>
+          <button class="copy-btn" (click)="copyCommand()" title="Copy to clipboard">📋 Copy</button>
+        </div>
+        <pre class="command-text">{{ generatedCommand }}</pre>
+      </div>
+
+      <div class="form-actions">
+        <button class="save-btn" (click)="saveConnection()" [disabled]="!connection.host">
+          💾 Save Connection
+        </button>
+        <button class="run-btn" (click)="runQuery()" [disabled]="!generatedCommand">
+          ▶ Execute
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
